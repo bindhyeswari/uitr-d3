@@ -35,6 +35,12 @@
             fill:RoyalBlue;
             opacity:0.6;
         }
+
+        text.tooltip {
+            font-size: 8pt;
+            font-weight: 400;
+            font-family:'Avenir Next';
+        }
     </style>
     <script>
 
@@ -45,7 +51,7 @@
 
             var margin = 50, width = 700, height = 300;
 
-            d3.select(document.body).append('svg').attr('width', width).attr('height', height)
+            d3.select(document.body).append('svg').attr('id', '#scatterplot').attr('width', width).attr('height', height)
                     .selectAll('circle').data(items).enter().append('circle')
                     .attr('class', 'data-point')
                     .attr('fill', 'rgba(125,0,0,0.3 )');
@@ -64,7 +70,6 @@
             d3.selectAll('circle').attr('cx', function (item) {
                 return x_scale(item.size);
             }).attr('cy', function (item) {
-                console.log(item.score);
                 return y_scale(item.score);
             }).attr('r', 6);
 
@@ -97,6 +102,29 @@
                     .attr("transform", "rotate (-90, -43, 0) translate(" +
                     -(height - margin) +
                     ")");
+
+
+            d3.select('svg').append('g').attr('id', 'g_tooltip');
+
+            // Interaction
+            d3.selectAll('circle').on('mouseover.tooltip', function (d) {
+                d3.select('#g_tooltip').empty();
+                console.log(d.id);
+                d3.select('#g_tooltip').append('text').text(d.full_name).attr('class', 'tooltip')
+                        .attr('x', x_scale(d.size) + 10)
+                        .attr('y', y_scale(d.score) - 10).attr('id', 'tooltip_' + d.id);
+            });
+
+            // Animation
+            d3.selectAll("circle")
+                    .on("mouseout.tooltip", function(d){
+                        console.log(d.full_name);
+                        d3.select('#tooltip_' + d.id)
+                                .transition()
+                                .duration(500)
+                                .style("opacity",0)
+                                .remove();
+                    });
 
         });
 
