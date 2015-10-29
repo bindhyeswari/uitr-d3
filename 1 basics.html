@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Beginning D3</title>
+    <link rel="stylesheet" href="base.css"/>
     <script src="bower_components/d3/d3.min.js"></script>
     <script>
 
@@ -13,6 +14,14 @@
                 // get access to the information that is to be displayed
                 data = data.items;
 
+                // display the information on the page
+                // todo: what if the data is not an array, but an object, loop over all the keys and the values
+                d3.select(document.body).append('ul').selectAll('li').data(data).enter()
+                        .append('li').text(function (repo) {
+                            return repo.full_name;
+                        }).style('font-weight', function (repo) {
+                            return repo.open_issues_count > 100 ? 'bold' : 'normal';
+                        });
 
             }
 
